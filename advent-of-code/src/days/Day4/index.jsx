@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {passports} from './day4input';
 
 
 const isNum = (val) => !Number.isNaN(parseInt(val,10));
 
 function checkValid(field, value){
-  console.log(field,value);
   switch (field){
     case 'byr':
       if (!isNum(value)) return false;
@@ -46,6 +45,8 @@ function checkValid(field, value){
 }
 
 export function Day4() {
+  const [input, setInput] = useState('');
+  console.log(input);
   const requiredFields = [
     'byr',
     'iyr',
@@ -65,15 +66,7 @@ export function Day4() {
   'hgt:179cm',
   'hcl:#cfa07d eyr:2025 pid:166559648 ' +
   'iyr:2011 ecl:brn hgt:59in']
- /* const formatPassports = passports.map(passport => {
-    const fields = passport.split(' ');
-    return { fields: fields.reduce(field => {
-      const fieldNameValue = field.split(':');
-      return { [fieldNameValue[0]]: fieldNameValue[1] }
-    })};
-  });
-  console.log(formatPassports);
-  */
+
   const validPassportTest = ['pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980 ' +
   'hcl:#623a2f',
   'eyr:2029 ecl:blu cid:129 byr:1989 ' +
@@ -95,18 +88,18 @@ export function Day4() {
   });
 
   const completelyValidPassports = validFieldsPassports.filter(passport => {
-    console.log(passport);
     const fields2 = passport.split(' ');
-    console.log(fields2);
     return fields2.every(field2 => {
-      console.log(field2);
       const fieldValue = field2.split(':');
       return checkValid(fieldValue[0], fieldValue[1]);
     })
-  })
-  console.log(completelyValidPassports);
+  });
+
   return <div>
     <h1>Let's find some passports!</h1>
+      <label htmlFor="day4-input">Input
+      <textarea id="day4-input" value={input} onChange={({target}) => setInput(target.value)}/>
+    </label>
     <p>All the passports have a length of {testedPassports.length}</p>
     <p>There are <b>{validFieldsPassports.length}</b> passports with the correct fields</p>
     <p>There are <b>{completelyValidPassports.length}</b> passports with valid fields</p>
