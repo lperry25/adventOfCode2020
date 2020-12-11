@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 
 export function Day10() {
   const [input, setInput] = useState('');
-  const [preambleLength, setPreambleLength] = useState(25);
 
   const inputTextArea =
     <>
