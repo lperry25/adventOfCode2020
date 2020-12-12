@@ -17,18 +17,16 @@ export function Day12() {
 
   console.log(nav);
 
-  const manhattanSum = (i, p, q) => (p[i] - q[i])
-
   // N, E, S, W
-
   const possibleDir = ['N', 'E', 'S', 'W'];
-  const getDirIndex = (val, plus) => {
-    const currentDirIndex = possibleDir.findIndex(dir => dir === forwardDir);
+
+  const getDirIndex = (startingPos, val, plus) => {
+    const currentDirIndex = possibleDir.findIndex(dir => dir === startingPos);
     const rotations = val / 90;
-    if (plus){
+    if (plus) {
       console.log(currentDirIndex + rotations)
-      return currentDirIndex + rotations < 4 ? currentDirIndex + rotations : currentDirIndex + rotations -4;
-    } 
+      return currentDirIndex + rotations < 4 ? currentDirIndex + rotations : currentDirIndex + rotations - 4;
+    }
     console.log(currentDirIndex - rotations);
     return currentDirIndex - rotations > -1 ? currentDirIndex - rotations : currentDirIndex - rotations + 4;
   }
@@ -49,12 +47,10 @@ export function Day12() {
       case 'F':
         return setCoordinates(forwardDir, val, coor);
       case 'R':
-        console.log('dir', val, forwardDir, possibleDir[getDirIndex(val, true)]);
-        forwardDir = possibleDir[getDirIndex(val, true)];
+        forwardDir = possibleDir[getDirIndex(forwardDir, val, true)];
         return coor;
       case 'L':
-        console.log('dir', val, forwardDir, possibleDir[getDirIndex(val, true)]);
-        forwardDir = possibleDir[getDirIndex(val)];
+        forwardDir = possibleDir[getDirIndex(forwardDir, val)];
         return coor;
       default:
         return coor;
@@ -70,51 +66,73 @@ export function Day12() {
     const val = parseInt(nav[i].slice(1), 10);
     coor = setCoordinates(dir, val, coor);
   }
-
-  console.log(coor);
   const manhattanDistance = coor[0] + coor[1];
 
- /* // part 2
-  let wPDir = ['N','E'];
-  let WP = [1, 10];
+  // part 2
+  console.log('start part 2');
+  let WP = [-1, 10];
   let coor2 = [0, 0];
-  const setWayPoints = (dir, val, coordinates) => {
+
+  const moveForward = (startPos, val, multiplier) => {
+    console.log('move forward', val, multiplier);
+    return startPos + val * multiplier;
+  }
+  const rotateWp = (currentWp, rotation, isClockwise) => {
+    if (isClockwise){
+  /*  if ((isClockwise && currentWp[0] * currentWp[1] < 0)
+      || (!isClockwise && currentWp[0] * currentWp[1] > 0)) {*/
+      console.log('clockwise', rotation);
+      if (rotation === 90) return [currentWp[1], currentWp[0] * -1];
+      if (rotation === 180) return [currentWp[0] * -1, currentWp[1] * -1];
+      return [currentWp[1] * -1, currentWp[0]];
+    }
+    console.log('counter clockwise', rotation);
+
+    if (rotation === 90) return [currentWp[1] * -1, currentWp[0]];
+    if (rotation === 180) return [currentWp[0] * -1, currentWp[1] * -1];
+    return [currentWp[1], currentWp[0] * -1];
+
+  }
+  const setWayPoints = (dir, val) => {
     switch (dir) {
       case 'E':
-        return [WP[0], WP[1] + val]
+        WP = [WP[0], WP[1] + val];
+        break;
       case 'W':
-        return [WP[0], WP[1] - val];
+        WP = [WP[0], WP[1] - val];
+        break;
       case 'S':
-        return [WP[0] + val, WP[1]]
+        WP = [WP[0] + val, WP[1]]
+        break;
       case 'N':
-        return [WP[0] - val, WP[1]];
+        WP = [WP[0] - val, WP[1]];
+        break;
       case 'F':
-
-        return setWayPoints(wPDir, val, coordinates);
+        coor2 = [moveForward(coor2[0], WP[0], val), moveForward(coor2[1], WP[1], val)]
+        break;
       case 'R':
-        console.log('dir', val, forwardDir, possibleDir[getDirIndex(val, true)]);
-        forwardDir = possibleDir[getDirIndex(val, true)];
-        return coordinates;
+        WP = rotateWp(WP, val, true);
+        break;
       case 'L':
-        console.log('dir', val, forwardDir, possibleDir[getDirIndex(val, true)]);
-        forwardDir = possibleDir[getDirIndex(val)];
-        return coordinates;
+        WP = rotateWp(WP, val);
+        break;
       default:
-        return coordinates;
-
-
+        break;
     }
+    return null;
   }
   for (let i = 0; i < nav.length; i++) {
     const dir = nav[i].charAt(0);
     const val = parseInt(nav[i].slice(1), 10);
-    coor2 = setCoordinates(dir, val, coor2);
+    console.log('start at', coor2, 'move', dir, val, 'WP', WP);
+    setWayPoints(dir, val, coor2);
+    console.log('end of loop', coor2, WP);
   }
 
   console.log(coor2);
   const manhattanDistance2 = coor2[0] + coor2[1];
 
-*/
+
 
 
 
@@ -122,7 +140,7 @@ export function Day12() {
     {inputTextArea}
     <p>There are {nav.length} directions</p>
     <p>Part 1: The manhattanDistance is <b>{manhattanDistance}</b></p>
-    {/*<p>Part 2: There are {occupiedSeatsPart2} occupied seats when it stabalizes</p>*/}
+    <p>Part 2: The manhattanDistance is <b>{manhattanDistance2}</b></p>
     <br />
 
   </div>)
