@@ -15,8 +15,6 @@ export function Day12() {
   if (input === '') return inputTextArea;
   let nav = input.split('\n');
 
-  console.log(nav);
-
   // N, E, S, W
   const possibleDir = ['N', 'E', 'S', 'W'];
 
@@ -24,10 +22,8 @@ export function Day12() {
     const currentDirIndex = possibleDir.findIndex(dir => dir === startingPos);
     const rotations = val / 90;
     if (plus) {
-      console.log(currentDirIndex + rotations)
       return currentDirIndex + rotations < 4 ? currentDirIndex + rotations : currentDirIndex + rotations - 4;
     }
-    console.log(currentDirIndex - rotations);
     return currentDirIndex - rotations > -1 ? currentDirIndex - rotations : currentDirIndex - rotations + 4;
   }
 
@@ -69,24 +65,18 @@ export function Day12() {
   const manhattanDistance = coor[0] + coor[1];
 
   // part 2
-  console.log('start part 2');
   let WP = [-1, 10];
   let coor2 = [0, 0];
 
   const moveForward = (startPos, val, multiplier) => {
-    console.log('move forward', val, multiplier);
     return startPos + val * multiplier;
   }
   const rotateWp = (currentWp, rotation, isClockwise) => {
     if (isClockwise){
-  /*  if ((isClockwise && currentWp[0] * currentWp[1] < 0)
-      || (!isClockwise && currentWp[0] * currentWp[1] > 0)) {*/
-      console.log('clockwise', rotation);
       if (rotation === 90) return [currentWp[1], currentWp[0] * -1];
       if (rotation === 180) return [currentWp[0] * -1, currentWp[1] * -1];
       return [currentWp[1] * -1, currentWp[0]];
     }
-    console.log('counter clockwise', rotation);
 
     if (rotation === 90) return [currentWp[1] * -1, currentWp[0]];
     if (rotation === 180) return [currentWp[0] * -1, currentWp[1] * -1];
@@ -124,17 +114,10 @@ export function Day12() {
   for (let i = 0; i < nav.length; i++) {
     const dir = nav[i].charAt(0);
     const val = parseInt(nav[i].slice(1), 10);
-    console.log('start at', coor2, 'move', dir, val, 'WP', WP);
     setWayPoints(dir, val, coor2);
-    console.log('end of loop', coor2, WP);
   }
 
-  console.log(coor2);
-  const manhattanDistance2 = coor2[0] + coor2[1];
-
-
-
-
+  const manhattanDistance2 = Math.abs(coor2[0]) + Math.abs(coor2[1]);
 
   return (<div>
     {inputTextArea}
